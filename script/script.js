@@ -14,27 +14,45 @@ function setup() {
 function draw() {
   background(0);
   ellipse(xPositionEllipse, yPositionEllipse, sizeEllipse, sizeEllipse);
-  rect(barPosition, 350 , 100, 15, barWidth);
+  rect(barPosition, 350, 100, 15, barWidth);
 
-  xPositionEllipse = xPositionEllipse + xSpeed;
-  yPositionEllipse = yPositionEllipse + ySpeed;
-  barPosition = barPosition + barSpeed;
+  xPositionEllipse = xPositionEllipse + xSpeed; //Sets x axis speed
+  yPositionEllipse = yPositionEllipse + ySpeed; //Sets y axis speed
+  barPosition = barPosition + barSpeed; //Sets movement speed of the bar
 
+  //Determines the direction on the x axis
   if ((xPositionEllipse + (sizeEllipse / 2)) > 600) {
     xSpeed = -3;
   } else if ((xPositionEllipse - (sizeEllipse / 2)) < 0) {
     xSpeed = 3;
   }
 
-  if ((yPositionEllipse + (sizeEllipse / 2)) > 350) {
+  //Determines the direction of the y axis
+  if ((yPositionEllipse + (sizeEllipse / 2)) > 400) {
     ySpeed = -3;
   } else if ((yPositionEllipse - (sizeEllipse / 2)) < 0) {
     ySpeed = 3;
   }
 
-  if((barPosition + barWidth) > 600) {
+  //Determinse if the ball hits the bar
+  if ((xPositionEllipse > barPosition) && (xPositionEllipse < (barPosition + barWidth))) {
+    if ((yPositionEllipse + (sizeEllipse / 2)) > 350) {
+      ySpeed = -3;
+    } else if ((yPositionEllipse - (sizeEllipse / 2)) < 0) {
+      ySpeed = 3;
+    }
+  }
+
+
+  if ((yPositionEllipse + (sizeEllipse / 2)) > 400) {
+    ySpeed = -3;
+  } else if ((yPositionEllipse - (sizeEllipse / 2)) < 0) {
+    ySpeed = 3;
+  }
+
+  if ((barPosition + barWidth) > 600) {
     barPosition = 500;
-  } else if(barPosition < 0) {
+  } else if (barPosition < 0) {
     barPosition = 0;
   }
 
@@ -49,5 +67,5 @@ function keyPressed() {
 }
 
 function keyReleased() {
-barSpeed = 0;
+  barSpeed = 0;
 }

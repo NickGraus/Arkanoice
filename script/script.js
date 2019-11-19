@@ -1,77 +1,136 @@
-var screenHeight = 800;
-var screenWidth = 1200;
-var xPositionEllipse = 300;
-var yPositionEllipse = 200;
-var sizeEllipse = 25;
-var xSpeed = 3;
-var ySpeed = 3;
-var barSpeed = 0;
+var screenHeight = 400;
+var screenWidth = 600;
 var barWidth = 100;
-var barDeadzone = 100;
 var barPosition = (screenWidth / 2) + (barWidth / 2);
+var blocks = [];
+
+var ball = {
+  xPositionEllipse: 300,
+  yPositionEllipse: 200,
+  sizeEllipse: 25,
+  radiusEllipse: this.sizeEllipse / 2,
+  xSpeed: 3,
+  ySpeed: 3
+};
+
+var bar = {
+  barSpeed: 0,
+  barWidth: 100,
+  barDeadzone: 100,
+  barPosition: (screenWidth / 2) + (this.barWidth / 2)
+}
 
 function setup() {
   createCanvas(screenWidth, screenHeight);
+
+  blocks[0] = {
+    x: 50,
+    y: 70,
+    xPositionBlock: 50,
+    yPositionBlock: 50,
+    blockWidth: 60,
+    blockHeight: 30,
+    display: function() {
+      rect(this.x, this.y, this.blockWidth, this.blockHeight);
+    },
+    remove: function() {
+      this.blockWidth = 0;
+      this.blockHeight = 0;
+    }
+  }
 }
 
-function draw() {
-  background(0);
-  rect(barPosition, (screenHeight - barDeadzone), 100, 15, barWidth);
-  ellipse(xPositionEllipse, yPositionEllipse, sizeEllipse, sizeEllipse);
 
-  for (var y = 50; y < 250; y = y + 40){
-    for (var x = 50; x < (screenWidth - 50); x = x + 70) {
-      rect(x, y, 60, 30);
+
+function draw() {
+  ball.xPositionEllipse = ball.xPositionEllipse + ball.xSpeed; //Sets x axis speed
+  ball.yPositionEllipse = ball.yPositionEllipse + ball.ySpeed; //Sets y axis speed
+  barPosition = barPosition + bar.barSpeed; //Sets movement speed of the bar
+
+  background(0);
+  rect(barPosition, (screenHeight - bar.barDeadzone), 100, 15, bar.barWidth);
+  ellipseMode(CENTER);
+  ellipse(ball.xPositionEllipse, ball.yPositionEllipse, ball.sizeEllipse, ball.sizeEllipse);
+
+  for (var i = 0; i < blocks.lenght; i++) {
+    blocks[i];
+  }
+
+  //Places blocks
+  for (var y = 50; y < 90; y = y + 40) {
+    for (var x = 70; x < (screenWidth - 50 - blocks[i].blockWidth); x = x + 70) {
+      blocks[i].display();
     }
   }
 
-
-  xPositionEllipse = xPositionEllipse + xSpeed; //Sets x axis speed
-  yPositionEllipse = yPositionEllipse + ySpeed; //Sets y axis speed
-  barPosition = barPosition + barSpeed; //Sets movement speed of the bar
-
   //Determines the direction on the x axis
-  if ((xPositionEllipse + (sizeEllipse / 2)) > screenWidth) {
-    xSpeed = -3;
-  } else if ((xPositionEllipse - (sizeEllipse / 2)) < 0) {
-    xSpeed = 3;
+  if ((ball.xPositionEllipse + (ball.sizeEllipse / 2)) > screenWidth) {
+    ball.xSpeed = -3;
+  } else if ((ball.xPositionEllipse - (ball.sizeEllipse / 2)) < 0) {
+    ball.xSpeed = 3;
   }
 
   //Determines the direction of the y axis
-  if ((yPositionEllipse + (sizeEllipse / 2)) > screenHeight) {
-    ySpeed = -3;
-  } else if ((yPositionEllipse - (sizeEllipse / 2)) < 0) {
-    ySpeed = 3;
+  if ((ball.yPositionEllipse + (ball.sizeEllipse / 2)) > screenHeight) {
+    ball.ySpeed = -3;
+  } else if ((ball.yPositionEllipse - (ball.sizeEllipse / 2)) < 0) {
+    ball.ySpeed = 3;
   }
 
   //Determinse if the ball hits the bar
-  if ((xPositionEllipse > barPosition) && (xPositionEllipse < (barPosition + barWidth))) {
-    if ((yPositionEllipse + (sizeEllipse / 2)) > (screenHeight - barDeadzone)) {
-      ySpeed = -3;
-    } else if ((yPositionEllipse - (sizeEllipse / 2)) < 0) {
-      ySpeed = 3;
+  if ((ball.xPositionEllipse > barPosition) && (ball.xPositionEllipse < (barPosition + bar.barWidth))) {
+    if ((ball.yPositionEllipse + (ball.sizeEllipse / 2)) > (screenHeight - bar.barDeadzone)) {
+      ball.ySpeed = -3;
+    } else if ((ball.yPositionEllipse - (ball.sizeEllipse / 2)) < 0) {
+      ball.ySpeed = 3;
     }
   }
 
   //Borders the bar inside the canvas
-  if ((barPosition + barWidth) > screenWidth) {
-    barPosition = screenWidth - barWidth;
+  if ((barPosition + bar.barWidth) > screenWidth) {
+    barPosition = screenWidth - bar.barWidth;
   } else if (barPosition < 0) {
     barPosition = 0;
   }
+
+  if (((ball.yPositionEllipse - ball.radiusEllipse) > blocks[i].xPositionBlock) && ((ball.yPositionEllipse + ball.radiusEllipse) < (blocks[i].xPositionBlock + blocks[i].blockHeight))) {
+    if (ball.xPositionEllipse == blocks[i].xPositionBlock) {
+      ball.xSpeed = -3;
+    } else if (ball.xPositionEllipse < (blocks[i].xPositionBlock + blocks[i].blockWidth)) {
+      ball.xSpeed = 3;
+    } else if (ball.xPositionEllipse == (blocks[i].xPositionBlock + blocks[i].blockWidth)) {
+      ball.xSpeed = 3;
+    }
+  }
+
+  if (((ball.xPositionEllipse + ball.radiusEllipse) > blocks[i].xPositionBlock) && ((ball.xPositionEllipse - ball.radiusEllipse) < (blocks[i].xPositionBlock + blocks[i].blockWidth))) {
+    if (ball.yPositionEllipse == blocks[i].xPositionBlock) {
+      ball.ySpeed = -3;
+    } else if (ball.yPositionEllipse == (blocks[i].xPositionBlock + blocks[i].blockHeight)) {
+      ball.ySpeed = 3;
+    }
+  }
+
+  // if((ball.xPositionEllipse > blocks[i].xPositionBlock) && (ball.xPositionEllipse < (blocks[i].xPositionBlock + blocks[i].blockWidth))) {
+  //   removeBlock();
+  // }
+  //
+  // if((ball.yPositionEllipse > blocks[i].xPositionBlock) && (ball.yPositionEllipse < (blocks[i].xPositionBlock + blocks[i].blockHeight))) {
+  //   removeBlock();
+  // }
 
 }
 
 //Controls the movement and direction of the bar
 function keyPressed() {
   if (keyCode === LEFT_ARROW) {
-    barSpeed = -5;
+    bar.barSpeed = -5;
   } else if (keyCode === RIGHT_ARROW) {
-    barSpeed = 5;
+    bar.barSpeed = 5;
   }
 }
 
 //Stops the movement of the bar after releasing the key
 function keyReleased() {
-  barSpeed = 0;
+  bar.barSpeed = 0;
 }

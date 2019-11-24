@@ -23,45 +23,54 @@ var bar = {
 function setup() {
   createCanvas(screenWidth, screenHeight);
 
-  blocks[0] = {
-    x: 50,
-    y: 70,
-    xPositionBlock: 50,
-    yPositionBlock: 50,
-    blockWidth: 60,
-    blockHeight: 30,
-    display: function() {
-      rect(this.x, this.y, this.blockWidth, this.blockHeight);
-    },
-    remove: function() {
-      this.blockWidth = 0;
-      this.blockHeight = 0;
-    }
+  for (var i = 0; i < 4; i++) {
+    blocks[i] = new Block(50, 50)
   }
 }
 
 
 
 function draw() {
+  background(0);
   ball.xPositionEllipse = ball.xPositionEllipse + ball.xSpeed; //Sets x axis speed
   ball.yPositionEllipse = ball.yPositionEllipse + ball.ySpeed; //Sets y axis speed
   barPosition = barPosition + bar.barSpeed; //Sets movement speed of the bar
+  for (var i = 0; i < blocks.length; i++) {
 
-  background(0);
+
+    // if (((ball.yPositionEllipse - ball.radiusEllipse) > blocks[i].xPositionBlock) && ((ball.yPositionEllipse + ball.radiusEllipse) < (blocks[i].xPositionBlock + blocks[i].blockWidth))) {
+    //   if (ball.xPositionEllipse == blocks[i].xPositionBlock) {
+    //     ball.xSpeed = -3;
+    //   } else if (ball.xPositionEllipse < (blocks[i].xPositionBlock + blocks[i].blockWidth)) {
+    //     ball.xSpeed = 3;
+    //   } else if (ball.xPositionEllipse == (blocks[i].xPositionBlock + blocks[i].blockWidth)) {
+    //     ball.xSpeed = 3;
+    //   }
+    // }
+    //
+    // if (((ball.xPositionEllipse + ball.radiusEllipse) > blocks[i].xPositionBlock) && ((ball.xPositionEllipse - ball.radiusEllipse) < (blocks[i].xPositionBlock + blocks[i].blockWidth))) {
+    //   if (ball.yPositionEllipse == blocks[i].xPositionBlock) {
+    //     ball.ySpeed = -3;
+    //   } else if (ball.yPositionEllipse == (blocks[i].xPositionBlock + blocks[i].blockHeight)) {
+    //     ball.ySpeed = 3;
+    //   }
+    // }
+
+
+    blocks[i].display();
+  }
+
+
   rect(barPosition, (screenHeight - bar.barDeadzone), 100, 15, bar.barWidth);
   ellipseMode(CENTER);
   ellipse(ball.xPositionEllipse, ball.yPositionEllipse, ball.sizeEllipse, ball.sizeEllipse);
 
-  for (var i = 0; i < blocks.lenght; i++) {
-    blocks[i];
-  }
-
   //Places blocks
-  for (var y = 50; y < 90; y = y + 40) {
-    for (var x = 70; x < (screenWidth - 50 - blocks[i].blockWidth); x = x + 70) {
-      blocks[i].display();
-    }
-  }
+  // for (var y = 50; y < 90; y = y + 40) {
+  //   for (var x = 70; x < (screenWidth - 50 - blocks[i].blockWidth); x = x + 70) {
+  //     blocks[i].display();
+  //   }
+  // }
 
   //Determines the direction on the x axis
   if ((ball.xPositionEllipse + (ball.sizeEllipse / 2)) > screenWidth) {
@@ -93,23 +102,9 @@ function draw() {
     barPosition = 0;
   }
 
-  if (((ball.yPositionEllipse - ball.radiusEllipse) > blocks[i].xPositionBlock) && ((ball.yPositionEllipse + ball.radiusEllipse) < (blocks[i].xPositionBlock + blocks[i].blockHeight))) {
-    if (ball.xPositionEllipse == blocks[i].xPositionBlock) {
-      ball.xSpeed = -3;
-    } else if (ball.xPositionEllipse < (blocks[i].xPositionBlock + blocks[i].blockWidth)) {
-      ball.xSpeed = 3;
-    } else if (ball.xPositionEllipse == (blocks[i].xPositionBlock + blocks[i].blockWidth)) {
-      ball.xSpeed = 3;
-    }
-  }
 
-  if (((ball.xPositionEllipse + ball.radiusEllipse) > blocks[i].xPositionBlock) && ((ball.xPositionEllipse - ball.radiusEllipse) < (blocks[i].xPositionBlock + blocks[i].blockWidth))) {
-    if (ball.yPositionEllipse == blocks[i].xPositionBlock) {
-      ball.ySpeed = -3;
-    } else if (ball.yPositionEllipse == (blocks[i].xPositionBlock + blocks[i].blockHeight)) {
-      ball.ySpeed = 3;
-    }
-  }
+
+
 
   // if((ball.xPositionEllipse > blocks[i].xPositionBlock) && (ball.xPositionEllipse < (blocks[i].xPositionBlock + blocks[i].blockWidth))) {
   //   removeBlock();

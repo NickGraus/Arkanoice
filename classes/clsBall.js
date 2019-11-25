@@ -1,15 +1,14 @@
 class Ball {
   constructor() {
-    this.xPositionEllipse = 300;
+    this.xPositionEllipse = 240;
     this.yPositionEllipse = 200;
-    this.sizeEllipse = 25;
-    //this.radiusEllipse = this.sizeEllipse / 2;
+    this.sizeEllipse = 24;
+    this.radiusEllipse = this.sizeEllipse / 2;
     this.xSpeed = 3;
     this.ySpeed = 3;
   }
 
   show() {
-    ellipseMode(CENTER);
     ellipse(this.xPositionEllipse, this.yPositionEllipse, this.sizeEllipse, this.sizeEllipse);
   }
 

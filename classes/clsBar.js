@@ -18,7 +18,11 @@ class Bar {
   move() {
     this.keyPressed();
     //this.keyReleased();
+    if(this.barPosition < 0){
+      this.barPosition = this.barPosition;
+    }
     this.barPosition = this.barPosition + this.barSpeed;
+
 
   }
 
@@ -27,6 +31,8 @@ class Bar {
       this.barSpeed = -5;
     } else if (keyCode === RIGHT_ARROW) {
       this.barSpeed = 5;
+    } else if (keyCode === 32) {
+      this.barSpeed = 0;
     }
   }
 

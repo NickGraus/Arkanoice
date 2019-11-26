@@ -1,16 +1,23 @@
 let screenHeight = 400; // Sets screenHeight
 let screenWidth = 600; // Sets screenWidth;
+let score = 0;
+let mySound;
+let bgImage;
 
 let blocks = [];
 let ball = [];
 let bar;
 
 
-
-
+function preload() {
+  mySound = loadSound('sounds/hitmark.wav');
+  bgImage = loadImage('images/bg.jpg');
+}
 
 function setup() {
+
   createCanvas(screenWidth, screenHeight); // Creates canvas screen
+
 
   // Ball object
   for (let i = 0; i < 1; i++) {
@@ -18,10 +25,14 @@ function setup() {
   }
 
   // Block object
-  for (let i = 0; i < 4; i++) {
-    let xPositionBlock = 50 + 70 * i;
-    blocks[i] = new Block(xPositionBlock, 200);
+  for (let k = 0; k < 1; k++) {
+    let yPositionBlock = 50 + 40 * k;
+    for (let i = 0; i < 7; i++) {
+      let xPositionBlock = 50 + 70 * i;
+      blocks[i] = new Block(xPositionBlock, yPositionBlock);
+    }
   }
+
 
   //Bar object
   for (let i = 0; i < 1; i++) {
@@ -30,11 +41,13 @@ function setup() {
 }
 
 
-
-
-
 function draw() {
-  background(0);
+  background(bgImage);
+  fill(255);
+  text(score, screenWidth - 20, 20);
+  textSize(24);
+  textAlign(RIGHT, TOP);
+
 
   bar.show(); // Function that draws playing bar
   bar.move(); // Function that makes bar-movement possible
@@ -84,20 +97,31 @@ function draw() {
     // Let's the ball detect every block
     for (let j = 0; j < blocks.length; j++) {
       // Determines if the ball hits the top or bottom of a block
-      if (((ball[i].xPositionEllipse + ball[i].radiusEllipse) > blocks[j].xPositionBlock) && ((ball[i].xPositionEllipse - ball[i].radiusEllipse) < (blocks[j].xPositionBlock + blocks[j].blockWidth))) {
+      if (((ball[i].xPositionEllipse + ball[i].radiusEllipse) > blocks[j].xPositionBlock) &&
+        ((ball[i].xPositionEllipse - ball[i].radiusEllipse) < (blocks[j].xPositionBlock + blocks[j].blockWidth))) {
         if ((ball[i].yPositionEllipse - ball[i].radiusEllipse) === (blocks[j].yPositionBlock + blocks[j].blockHeight)) {
           ball[i].ySpeed = 3;
           blocks[j].blockWidth = 0;
           blocks[j].blockHeight = 0;
           blocks[j].xPositionBlock = 0;
           blocks[j].yPositionBlock = 0;
-        }
-         else if ((ball[i].yPositionEllipse + ball[i].radiusEllipse) === blocks[j].yPositionBlock) {
+          score = score + 100;
+          mySound.play();
+        } else if ((ball[i].yPositionEllipse + ball[i].radiusEllipse) === blocks[j].yPositionBlock) {
           ball[i].ySpeed = -3;
           blocks[j].blockWidth = 0;
           blocks[j].blockHeight = 0;
           blocks[j].xPositionBlock = 0;
           blocks[j].yPositionBlock = 0;
+          score = score + 100;
+          mySound.play();
+        }
+      } else if (((ball[i].yPositionEllipse - ball[i].radiusEllipse) < (blocks[j].yPositionBlock + blocks[j].blockHeight)) &&
+        ((ball[i].yPositionEllipse + ball[i].radiusEllipse) > blocks[j].yPositionBlock)) {
+        if ((ball[i].xPositionEllipse - ball[i].radiusEllipse) === (blocks[j].xPositionBlock + blocks[j].blockWidth)) {
+          ball[i].xSpeed = 3;
+        } else if ((ball[i].xPositionEllipse + ball[i].radiusEllipse) === blocks[j].xPositionBlock) {
+          ball[i].xSpeed = -3;
         }
       }
     }
@@ -119,4 +143,18 @@ function draw() {
   // } else if (barPosition < 0) {
   //   barPosition = 0;
   // }
+}
+
+
+
+function keyPressed() {
+  if (keyCode === LEFT_ARROW) {
+    background(0);
+mySound.play();
+  } else if (keyCode === RIGHT_ARROW) {
+
+    background(255);
+  } else if (keyCode === 32) {
+    this.barSpeed = 0;
+  }
 }

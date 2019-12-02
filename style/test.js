@@ -4,8 +4,9 @@ let score = 0;
 let mySound;
 let bgImage;
 let lives = 0;
+let yPositionBlock = 50;
 
-
+let blockColumns = [];
 let blocks = [];
 let ball = [];
 let bar;
@@ -27,13 +28,12 @@ function setup() {
   }
 
   // Block object
-  for (let k = 0; k < 1; k++) {
-    let yPositionBlock = 50 + 40 * k;
-    for (let i = 0; i < 7; i++) {
-      let xPositionBlock = 50 + 70 * i;
-      blocks[i] = new Block(xPositionBlock, yPositionBlock);
-    }
+  for (let i = 0; i < 7; i++) {
+    let xPositionBlock = 50 + 70 * i;
+    blocks[i] = new Block(xPositionBlock, yPositionBlock);
   }
+  blockColumns = [blocks, blocks, blocks];
+
 
 
   //Bar object
@@ -77,7 +77,7 @@ function draw() {
       ball[i].ySpeed = 3;
     }
 
-    if(lives > 2) {
+    if (lives > 2) {
       ball[i].xSpeed = 0;
       ball[i].ySpeed = 0;
       ball[i].yPositionEllipse = 0;
@@ -85,7 +85,7 @@ function draw() {
       ball[i].sizeEllipse = 0;
       textSize(72);
       textAlign(CENTER, CENTER);
-      text("GAME OVER", screenWidth / 2 , screenHeight / 2);
+      text("GAME OVER", screenWidth / 2, screenHeight / 2);
       textSize(24);
 
 
@@ -114,66 +114,80 @@ function draw() {
     // }
 
     // Let's the ball detect every block
-    for (let j = 0; j < blocks.length; j++) {
-      // Determines if the ball hits the top or bottom of a block
-      if (((ball[i].xPositionEllipse + ball[i].radiusEllipse) > blocks[j].xPositionBlock) &&
-        ((ball[i].xPositionEllipse - ball[i].radiusEllipse) < (blocks[j].xPositionBlock + blocks[j].blockWidth))) {
-        if ((ball[i].yPositionEllipse - ball[i].radiusEllipse) === (blocks[j].yPositionBlock + blocks[j].blockHeight)) {
-          ball[i].ySpeed = 3;
-          blocks[j].blockWidth = 0;
-          blocks[j].blockHeight = 0;
-          blocks[j].xPositionBlock = 0;
-          blocks[j].yPositionBlock = 0;
-          score = score + 100;
-          mySound.play();
-        } else if ((ball[i].yPositionEllipse + ball[i].radiusEllipse) === blocks[j].yPositionBlock) {
-          ball[i].ySpeed = -3;
-          blocks[j].blockWidth = 0;
-          blocks[j].blockHeight = 0;
-          blocks[j].xPositionBlock = 0;
-          blocks[j].yPositionBlock = 0;
-          score = score + 100;
-          mySound.play();
+    blockColumns.forEach(blockColumn => {
+      blockColumn.forEach(block => {
+        // Determines if the ball hits the top or bottom of a block
+        if (((ball[i].xPositionEllipse + ball[i].radiusEllipse) > block.xPositionBlock) &&
+          ((ball[i].xPositionEllipse - ball[i].radiusEllipse) < (block.xPositionBlock + block.blockWidth))) {
+          if ((ball[i].yPositionEllipse - ball[i].radiusEllipse) === (block.yPositionBlock + block.blockHeight)) {
+            ball[i].ySpeed = 3;
+            block.blockWidth = 0;
+            block.blockHeight = 0;
+            block.xPositionBlock = 0;
+            block.yPositionBlock = 0;
+            score = score + 100;
+            mySound.play();
+          } else if ((ball[i].yPositionEllipse + ball[i].radiusEllipse) === block.yPositionBlock) {
+            ball[i].ySpeed = -3;
+            block.blockWidth = 0;
+            block.blockHeight = 0;
+            block.xPositionBlock = 0;
+            block.yPositionBlock = 0;
+            score = score + 100;
+            mySound.play();
+          }
+        } else if (((ball[i].yPositionEllipse - ball[i].radiusEllipse) < (block.yPositionBlock + block.blockHeight)) &&
+          ((ball[i].yPositionEllipse + ball[i].radiusEllipse) > block.yPositionBlock)) {
+          if ((ball[i].xPositionEllipse - ball[i].radiusEllipse) === (block.xPositionBlock + block.blockWidth)) {
+            ball[i].xSpeed = 3;
+          } else if ((ball[i].xPositionEllipse + ball[i].radiusEllipse) === block.xPositionBlock) {
+            ball[i].xSpeed = -3;
+          }
         }
-      } else if (((ball[i].yPositionEllipse - ball[i].radiusEllipse) < (blocks[j].yPositionBlock + blocks[j].blockHeight)) &&
-        ((ball[i].yPositionEllipse + ball[i].radiusEllipse) > blocks[j].yPositionBlock)) {
-        if ((ball[i].xPositionEllipse - ball[i].radiusEllipse) === (blocks[j].xPositionBlock + blocks[j].blockWidth)) {
-          ball[i].xSpeed = 3;
-        } else if ((ball[i].xPositionEllipse + ball[i].radiusEllipse) === blocks[j].xPositionBlock) {
-          ball[i].xSpeed = -3;
-        }
-      }
+      });
+
+
+    });
+    let rowCounter = 0;
+    // Draws block objects
+    //for (let i = 0; i < blocks.length; i++) {
+    blockColumns.forEach(blockColumn => {
+
+      let yPositionBlock = 50 + 40 * rowCounter;
+      blockColumn.forEach(block => {
+        block.yPositionBlock = yPositionBlock;
+        block.show();
+
+        console.log(block.yPositionBlock);
+      });
+      rowCounter++;
+    });
+
+
+    //}
+
+
+
+
+    // //Borders the bar inside the canvas
+    // if ((barPosition + bar.barWidth) > screenWidth) {
+    //   barPosition = screenWidth - bar.barWidth;
+    // } else if (barPosition < 0) {
+    //   barPosition = 0;
+    // }
+  }
+}
+
+
+
+  function keyPressed() {
+    if (keyCode === LEFT_ARROW) {
+      background(0);
+      mySound.play();
+    } else if (keyCode === RIGHT_ARROW) {
+
+      background(255);
+    } else if (keyCode === 32) {
+      this.barSpeed = 0;
     }
-
-
   }
-
-  // Draws block objects
-  for (let i = 0; i < blocks.length; i++) {
-    blocks[i].show();
-  }
-
-
-
-
-  // //Borders the bar inside the canvas
-  // if ((barPosition + bar.barWidth) > screenWidth) {
-  //   barPosition = screenWidth - bar.barWidth;
-  // } else if (barPosition < 0) {
-  //   barPosition = 0;
-  // }
-}
-
-
-
-function keyPressed() {
-  if (keyCode === LEFT_ARROW) {
-    background(0);
-mySound.play();
-  } else if (keyCode === RIGHT_ARROW) {
-
-    background(255);
-  } else if (keyCode === 32) {
-    this.barSpeed = 0;
-  }
-}
